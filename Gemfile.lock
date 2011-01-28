@@ -13,4 +13,4 @@ PLATFORMS
 
 DEPENDENCIES
   haml
-  sinatra (= 1.1.2)
+  sinatra (>= 1.1.2)
