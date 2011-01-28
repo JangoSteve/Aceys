@@ -3,7 +3,7 @@ require 'bundler'
 
 Bundler.require
 
-require 'heroku-sinatra-app'
+require 'my_app'
 
 ## There is no need to set directories here anymore;
 ## Just run the application
