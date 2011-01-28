@@ -6,7 +6,9 @@ configure :development do
   require 'sqlite3'
 end
 configure :test do
-  set :database, 'sqlite3::memory:'
+  set :database, 'sqlite::memory:'
+  # rspec context looks for views relative to /spec dir unless specified
+  set :views, File.dirname(__FILE__) + '/../views'
 end
 configure :production do
   Sequel.connect(ENV['DATABASE_URL'])
