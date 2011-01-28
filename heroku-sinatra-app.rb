@@ -16,10 +16,10 @@ configure :production do
   #       from ENV['DATABASE_URI'] (see /env route below)
 end
 
+
 # Quick test
 get '/' do
-  "Congradulations!
-   You're running a Sinatra application on Heroku!"
+  haml :index
 end
 
 # Test at <appname>.heroku.com
