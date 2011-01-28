@@ -7,6 +7,9 @@
 #
 require 'rubygems'
 require 'sinatra'
+require 'sinatra/sequel'
+
+set :database, ENV['DATABASE_URL'] || 'sqlite://my-app.db'
 
 configure :production do
   # Configure stuff here you'll want to
@@ -15,7 +18,6 @@ configure :production do
   # TIP:  You can get you database information
   #       from ENV['DATABASE_URI'] (see /env route below)
 end
-
 
 # Quick test
 get '/' do
