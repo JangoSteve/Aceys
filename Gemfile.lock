@@ -5,6 +5,8 @@ GEM
     haml (3.0.25)
     postgres (0.7.9.2008.01.28)
     rack (1.2.1)
+    rack-test (0.5.7)
+      rack (>= 1.0)
     rspec (2.4.0)
       rspec-core (~> 2.4.0)
       rspec-expectations (~> 2.4.0)
@@ -29,6 +31,7 @@ PLATFORMS
 DEPENDENCIES
   haml
   postgres
+  rack-test
   rspec
   sinatra (>= 1.1.2)
   sinatra-sequel
