@@ -1,9 +1,18 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    diff-lcs (1.1.2)
     haml (3.0.25)
     postgres (0.7.9.2008.01.28)
     rack (1.2.1)
+    rspec (2.4.0)
+      rspec-core (~> 2.4.0)
+      rspec-expectations (~> 2.4.0)
+      rspec-mocks (~> 2.4.0)
+    rspec-core (2.4.0)
+    rspec-expectations (2.4.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.4.0)
     sequel (3.19.0)
     sinatra (1.1.2)
       rack (~> 1.1)
@@ -20,6 +29,7 @@ PLATFORMS
 DEPENDENCIES
   haml
   postgres
+  rspec
   sinatra (>= 1.1.2)
   sinatra-sequel
   sqlite3

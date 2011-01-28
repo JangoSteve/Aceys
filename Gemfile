@@ -8,6 +8,7 @@ end
 
 group :test do
   gem 'sqlite3'
+  gem 'rspec'
 end
 
 group :production do
