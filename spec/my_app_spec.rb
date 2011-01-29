@@ -85,7 +85,7 @@ describe "My App" do
       [
         @vote1 = Vote.new(:company_name => 'Alfa Jango'),
         Vote.new(:company_name => 'alfa-jango'),
-        Vote.new(:company_name => 'IX Innovations'),
+        @vote3 = Vote.new(:company_name => 'IX Innovations'),
         Vote.new(:company_name => 'ix innovations'),
         @vote5 = Vote.new(:company_name => 'ix innovations')
       ].each(&:submit!)
@@ -101,6 +101,23 @@ describe "My App" do
     it "limits results if passed" do
       results = Company.get_by_votes(1)
       results.count.should == 1
+    end
+
+    it "re-tallies votes properly for companies" do
+      @vote1.company.update(:votes_count => 200)
+      @vote5.company.update(:votes_count => 300)
+
+      @vote1.company.re_tally_votes.votes_count.should == 2
+      @vote5.company.re_tally_votes.votes_count.should == 3
+    end
+
+    it "re-tallies votes properly for spellings" do
+      @vote1.spelling.update(:votes_count => 200)
+      @vote1.spelling.re_tally_votes.votes_count.should == 1
+
+      @vote5.company.update(:votes_count => 300, :preferred_spelling => 'bleep bloop')
+      @vote5.spelling.re_tally_votes.votes_count.should == 2
+      @vote5.company.preferred_spelling.should == @vote5.company_name
     end
 
   end

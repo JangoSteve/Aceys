@@ -41,7 +41,10 @@ module Voteable
   end
 
   def re_tally_votes
-    self.update(:votes_count => Vote.get{ count(:id) })
+    assoc_key = self.class.association_reflection(:votes)[:key]
+    votes_count = Vote.filter(assoc_key => self[primary_key]).count
+    self.update(:votes_count => votes_count)
+    return self
   end
 
   def increment_votes
@@ -144,6 +147,12 @@ class Spelling < Sequel::Model
     else
       company.re_tally_votes
     end
+  end
+
+  def re_tally_votes
+    super
+    self.company.update_preferred_spelling
+    return self
   end
 
 end
