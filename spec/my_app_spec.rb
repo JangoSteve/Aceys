@@ -126,4 +126,14 @@ describe "My App" do
     get '/'
     last_response.should be_ok
   end
+
+  it "should respond to /thank_you" do
+    get '/thank_you'
+    last_response.should be_ok
+  end
+
+  it "should respond to /results" do
+    get '/results'
+    last_response.should be_ok
+  end
 end

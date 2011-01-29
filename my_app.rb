@@ -20,15 +20,31 @@ post '/vote' do
   redirect "/thank_you/#{vote.id}"
 end
 
+get '/thank_you' do
+  thank_you
+end
+
 get '/thank_you/:id' do
-  @vote = Vote[params[:id]] if params[:id]
-  haml :thank_you
+  @vote = Vote[params[:id]]
+  thank_you
+end
+
+get '/results' do
+  results
 end
 
 get '/results/:id' do
-  @vote = Vote[params[:id]] if params[:id]
+  @vote = Vote[params[:id]]
+  results
+end
+
+def results
   @companies = Company.get_by_votes
   haml :results
+end
+
+def thank_you
+  haml :thank_you
 end
 
 # Test at <appname>.heroku.com
