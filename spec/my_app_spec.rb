@@ -7,9 +7,12 @@ describe "My App" do
     @app ||= Sinatra::Application
   end
 
+  before :each do
+    [Vote,Spelling,Company].each(&:delete)
+  end
+
   describe "voting" do
     before :each do
-      [Vote,Spelling,Company].each(&:delete)
       @vote = Vote.new(:company_name => 'Alfa Jango')
     end
 
@@ -73,6 +76,31 @@ describe "My App" do
       it "matches similar phonetic spellings" do
         pending
       end
+    end
+
+  end
+
+  describe "results" do
+    before :each do
+      [
+        @vote1 = Vote.new(:company_name => 'Alfa Jango'),
+        Vote.new(:company_name => 'alfa-jango'),
+        Vote.new(:company_name => 'IX Innovations'),
+        Vote.new(:company_name => 'ix innovations'),
+        @vote5 = Vote.new(:company_name => 'ix innovations')
+      ].each(&:submit!)
+    end
+
+    it "orders results properly" do
+      results = Company.get_by_votes
+      results.count.should == 2
+      results.first.id.should == @vote5.company_id
+      results.last.id.should == @vote1.company_id
+    end
+
+    it "limits results if passed" do
+      results = Company.get_by_votes(1)
+      results.count.should == 1
     end
 
   end

@@ -35,8 +35,8 @@ module Voteable
   end
 
   module ClassMethods
-    def get_by_votes
-      
+    def get_by_votes(limit=nil)
+      self.order(:votes_count.desc).limit(limit)
     end
   end
 
