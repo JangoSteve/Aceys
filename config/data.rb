@@ -24,6 +24,48 @@
 #   tour.save
 # end
 
+module Voteable
+  def self.included(base)
+    base.one_to_many :votes
+    unless base.respond_to?(:add_association_dependencies)
+      base.plugin :association_dependencies
+    end
+    base.add_association_dependencies :votes => :delete
+    base.extend ClassMethods
+  end
+
+  module ClassMethods
+    def get_by_votes
+      
+    end
+  end
+
+  def re_tally_votes
+    self.update(:votes_count => Vote.get{ count(:id) })
+  end
+
+  def increment_votes
+    if self.new?
+      self.votes_count = 1
+    else
+      self.this.update(:votes_count => :votes_count + 1)
+    end
+  end
+
+  def decrement_votes
+    if self.new?
+      self.votes_count = 0
+    else
+      self.this.update(:votes_count => :votes_count - 1)
+    end
+  end
+
+  def before_create
+    self.votes_count = 0 if self.votes_count.nil?
+  end
+
+end
+
 class Vote < Sequel::Model
   many_to_one :company
   many_to_one :spelling
@@ -32,53 +74,76 @@ class Vote < Sequel::Model
 
   def submit!
     database.transaction do
-      self.company, self.spelling = Company.tally(company_name)
+      self.spelling = Spelling.tally(company_name)
+      self.company = self.spelling.company
       self.save
     end
+  end
+
+  def before_destroy
+    self.company.re_tally_votes
+    self.spelling.re_tally_votes
   end
 
 end
 
 class Company < Sequel::Model
-  one_to_many :votes
+  include Voteable
+
   one_to_many :spellings
+
+  Company.add_association_dependencies :spellings => :delete
 
   def self.find_by_pattern_or_create(spelling)
     regex = Regexp.new(spelling.gsub(/[ \-_]+/, '[ -_]*'))
-    p regex.inspect
     company = Company.filter(:name.ilike(regex)).first ||
-      Company.create(:name => spelling, :preferred_spelling => spelling, :votes_count => 1)
+      Company.create(:name => spelling, :preferred_spelling => spelling)
+
     return company
   end
 
-  def self.tally(name)
-    spelling = Spelling.eager(:company).filter(:name => name).first ||
-      Spelling.new(:name => name)
-    # Called from Vote#submit!, already contained in a transaction
-    if spelling.company_id.nil?
-      Company.find_by_pattern_or_create(name)
-      company = Company.create(:name => spelling, :preferred_spelling => spelling, :votes_count => 1)
-      spelling.company = company
-      spelling.votes_count = 1
-      spelling.save
-    else
-      company = spelling.company
-      spelling.set(:votes_count => spelling.votes_count + 1)
-      spelling.company.set(:votes_count => company.votes_count + 1)
-    end
-
-    return company, spelling
+  def update_preferred_spelling
+    spelling = Spelling.most_popular_for(self)
+    self.update(:preferred_spelling => spelling.name)
   end
 
 end
 
 class Spelling < Sequel::Model
-  many_to_one :company
-  one_to_many :votes
+  include Voteable
 
-  def after_update
-    super
-    company.update_preferred_spelling
+  many_to_one :company
+
+  def self.tally(name)
+    spelling = Spelling.eager(:company).filter(:name => name).first ||
+      Spelling.new(:name => name)
+
+    # Called from Vote#submit!, already contained in a transaction
+    spelling.company ||= Company.find_by_pattern_or_create(name)
+    spelling.increment_votes
+    spelling.company.increment_votes
+
+    if spelling.new?
+      spelling.save
+    else
+      spelling.company.update_preferred_spelling
+    end
+
+    spelling.company.reload
+    return spelling
+  end
+
+  def self.most_popular_for(company)
+    Spelling.filter(:company_id => company.id).order(:votes_count.desc).limit(1).first
+  end
+
+  def before_destroy
+    company = self.company.eager(:spellings)
+    if company.spellings.size == 1
+      company.destroy
+    else
+      company.re_tally_votes
+    end
   end
 
 end

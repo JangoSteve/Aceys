@@ -9,6 +9,7 @@ describe "My App" do
 
   describe "voting" do
     before :each do
+      [Vote,Spelling,Company].each(&:delete)
       @vote = Vote.new(:company_name => 'Alfa Jango')
     end
 
@@ -24,6 +25,7 @@ describe "My App" do
       @vote.submit!
       company = @vote.company
       company.name.should == @vote.company_name
+      company.preferred_spelling.should == @vote.company_name
       company.votes_count.should == 1
     end
 
@@ -34,23 +36,43 @@ describe "My App" do
       spelling.company_id.should == company.id
     end
 
-    it "finds existing spelling and tallies vote" do
-      pending
-    end
+    describe "for existing companies" do
+      before :each do
+        @existing_vote = Vote.new(:company_name => 'Alfa Jango')
+        @existing_vote.submit!
+      end
 
-    it "finds existing company and tallies vote" do
-      pending
+      it "finds existing spelling and tallies vote" do
+        @vote.submit!
+        @vote.spelling_id.should == @existing_vote.spelling_id
+        @vote.spelling.reload.votes_count.should == 2
+      end
 
-    end
+      it "finds existing company and tallies vote" do
+        @vote.submit!
+        @vote.company_id.should == @existing_vote.company_id
+        @vote.company.reload.votes_count.should == 2
+      end
 
-    it "creates alternate spelling and tallies vote for existing company" do
-      pending
+      it "creates alternate spelling and tallies vote for existing company" do
+        @vote.company_name = "alfa-jango"
+        @vote.submit!
+        @vote.spelling_id.should_not == @existing_vote.spelling_id
+        @vote.company_id.should == @existing_vote.company_id
+        @vote.company.reload.votes_count.should == 2
+      end
 
-    end
+      it "updates preferred spelling for existing company" do
+        @vote.company_name = "Alfa-Jango"
+        @vote.submit!
+        @vote.company.preferred_spelling.should == "Alfa Jango"
+        Vote.new(:company_name => "Alfa-Jango").submit!
+        @vote.company.reload.preferred_spelling.should == "Alfa-Jango"
+      end
 
-    it "updates preferred spelling for existing company" do
-      pending
-
+      it "matches similar phonetic spellings" do
+        pending
+      end
     end
 
   end
