@@ -28,13 +28,12 @@ class Vote < Sequel::Model
   many_to_one :company
   many_to_one :spelling
 
-  attr_accessor :company_name, :spelling_name
+  attr_accessor :company_name
 
-  def submit_vote!(company_name, email=nil)
-    transaction do
-      self.spelling = Spelling.tally(company_name)
-      self.company = Company.tally(spelling)
-      self.create
+  def submit!
+    database.transaction do
+      self.company, self.spelling = Company.tally(company_name)
+      self.save
     end
   end
 
@@ -44,22 +43,40 @@ class Company < Sequel::Model
   one_to_many :votes
   one_to_many :spellings
 
-  def self.tally(spelling)
-    
+  def self.find_by_pattern_or_create(spelling)
+    regex = Regexp.new(spelling.gsub(/[ \-_]+/, '[ -_]*'))
+    p regex.inspect
+    company = Company.filter(:name.ilike(regex)).first ||
+      Company.create(:name => spelling, :preferred_spelling => spelling, :votes_count => 1)
+    return company
   end
+
+  def self.tally(name)
+    spelling = Spelling.eager(:company).filter(:name => name).first ||
+      Spelling.new(:name => name)
+    # Called from Vote#submit!, already contained in a transaction
+    if spelling.company_id.nil?
+      Company.find_by_pattern_or_create(name)
+      company = Company.create(:name => spelling, :preferred_spelling => spelling, :votes_count => 1)
+      spelling.company = company
+      spelling.votes_count = 1
+      spelling.save
+    else
+      company = spelling.company
+      spelling.set(:votes_count => spelling.votes_count + 1)
+      spelling.company.set(:votes_count => company.votes_count + 1)
+    end
+
+    return company, spelling
+  end
+
 end
 
 class Spelling < Sequel::Model
   many_to_one :company
   one_to_many :votes
 
-  def self.tally
-    Spelling.find_or_create(:name => name)
-    self.company ||= Company.find_by_pattern_or_create(name)
-
-  end
-
-  def after_save
+  def after_update
     super
     company.update_preferred_spelling
   end

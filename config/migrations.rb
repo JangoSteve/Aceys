@@ -26,16 +26,6 @@
 #   end
 # end
 
-migration "create votes table" do
-  database.create_table :votes do
-    primary_key :id
-    DateTime    :date
-    String      :email
-    foreign_key :company_id, :companies
-    foreign_key :spelling_id, :spellings
-  end
-end
-
 migration "create companies table" do
   database.create_table :companies do
     primary_key :id
@@ -52,6 +42,16 @@ migration "create spellings table" do
     DateTime    :date
     String      :name
     Integer     :votes_count
-    foreign_key :company_id
+    foreign_key :company_id, :companies
+  end
+end
+
+migration "create votes table" do
+  database.create_table :votes do
+    primary_key :id
+    DateTime    :date
+    String      :email
+    foreign_key :company_id, :companies
+    foreign_key :spelling_id, :spellings
   end
 end
