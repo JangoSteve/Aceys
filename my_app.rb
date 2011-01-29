@@ -15,6 +15,22 @@ get '/' do
   haml :index
 end
 
+post '/vote' do
+  vote = Vote.new(params).submit! or halt 400
+  redirect "/thank_you/#{vote.id}"
+end
+
+get '/thank_you/:id' do
+  @vote = Vote[params[:id]] if params[:id]
+  haml :thank_you
+end
+
+get '/results/:id' do
+  @vote = Vote[params[:id]] if params[:id]
+  @companies = Company.get_by_votes
+  haml :results
+end
+
 # Test at <appname>.heroku.com
 
 # You can see all your app specific information this way.

@@ -1,0 +1,6 @@
+%h1 Thank you for voting!
+%p
+  Visit
+  %a{:href => "/results/#{@vote.id if @vote}"}
+    http://aceys.heroku.com/results
+  for real-time leaderboard.

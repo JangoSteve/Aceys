@@ -1,3 +1,5 @@
-%h1 Hello there
+%h1 My favorite company discovered at ACE 2011 is:
 %p
-  I'll be your "hello world", today.
+  %form{:action => "/vote", :method => :post}
+    %input{:type => :text, :name => :company_name}
+    %input{:type => :submit}
