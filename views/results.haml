@@ -1,2 +1,12 @@
 %h1 The Aceys 2011 - Sponsored by Alfa Jango, LLC
 %h2 Leaderboard
+%table
+  %tr
+    %th Company
+    %th Votes
+  - @companies.each do |company|
+    %tr
+      %th
+        = company.preferred_spelling
+      %th
+        = company.votes_count
