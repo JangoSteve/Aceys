@@ -9,10 +9,7 @@ end
 group :test do
   gem 'sqlite3'
   gem 'rspec'
-<<<<<<< HEAD:Gemfile
-=======
   gem 'rack-test'
->>>>>>> tmp:Gemfile
 end
 
 group :production do
