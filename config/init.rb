@@ -14,6 +14,14 @@ configure :test do
 end
 configure :production do
   Sequel.connect(ENV['DATABASE_URL'])
+
+  TheDomain = 'http://www.theaceys.com'
+
+  before do
+    if request.env['HTTP_HOST'] != TheDomain
+      redirect TheDomain
+    end
+  end
 end
 
 require 'config/migrations'
