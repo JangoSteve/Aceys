@@ -97,17 +97,28 @@ class Company < Sequel::Model
 
   Company.add_association_dependencies :spellings => :delete
 
+  NAME_REGEX = /[ \-_,\'\"\/]+/
+
   def self.find_by_pattern_or_create(spelling)
-    regex = Regexp.new(spelling.gsub(/[ \-_]+/, '[ -_]*'))
-    company = Company.filter(:name.ilike(regex)).first ||
+    company =  Company.find_by_pattern(spelling) ||
       Company.create(:name => spelling, :preferred_spelling => spelling)
 
     return company
   end
 
+  def self.find_by_pattern(spelling)
+    regex = Regexp.new(spelling.gsub(NAME_REGEX, '[ -_,\'\"]*'))
+    Company.filter(:name.ilike(regex)).first
+  end
+
   def update_preferred_spelling
     spelling = Spelling.most_popular_for(self)
     self.update(:preferred_spelling => spelling.name)
+  end
+
+  # Normalize all company names to make it easier to regex various spellings and formats
+  def before_create
+    self.name = self.name.gsub(NAME_REGEX, '').downcase
   end
 
 end

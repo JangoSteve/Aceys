@@ -14,3 +14,16 @@ Sinatra::Base.set :logging, false
 
 require File.join(File.dirname(__FILE__), '..', 'my_app')
 
+RSpec::Matchers.define :have_found_by_spelling do |expected_record, spelling|
+  match do |actual_record|
+    expected_record == actual_record
+  end
+
+  failure_message_for_should do |actual_record|
+    "expected `#{spelling}` would match '#{expected_record.name}'"
+  end
+
+  failure_message_for_should_not do |actual_record|
+    "expected `#{spelling}` would not match '#{expected_record.name}'"
+  end
+end

@@ -80,6 +80,19 @@ describe "My App" do
 
   end
 
+  describe "spellings" do
+    before :each do
+      @company = Company.create(:name => "Alfa Jango LLC")
+      @company2 = Company.create(:name => "IX Innovations")
+    end
+
+    it "matches common spelling variants" do
+      ["Alfa Jango, LLC", "alfa jango llc", "AlfaJango llc", "alfa-jango_llc", "'Alfa' \"Jango\", LLC", "Alfa/Jango LLC"].each do |spelling|
+        Company.find_by_pattern(spelling).should have_found_by_spelling @company, spelling
+      end
+    end
+  end
+
   describe "results" do
     before :each do
       [
