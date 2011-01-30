@@ -1,5 +1,9 @@
+- content_for :document_ready do
+  var data = [ '#{@company_names.join('\',\'')}' ];
+  $('#company-name-input').autocomplete(data);
+
 %h1 My favorite company discovered at ACE 2011 is:
 %p
   %form{:action => "/vote", :method => :post}
-    %input{:type => :text, :name => :company_name}
+    %input#company-name-input{:type => :text, :name => :company_name}
     %input{:type => :submit}

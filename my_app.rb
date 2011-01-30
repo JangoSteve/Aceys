@@ -8,11 +8,13 @@
 require 'rubygems'
 require 'sinatra'
 require 'cgi'
+require 'sinatra/content_for'
 
 require 'config/init.rb'
 
 # Quick test
 get '/' do
+  @company_names = Company.select(:preferred_spelling).order(:preferred_spelling).collect(&:preferred_spelling)
   haml :index
 end
 
