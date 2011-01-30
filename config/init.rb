@@ -5,9 +5,6 @@ configure :development do
   #set :database, 'sqlite://development/aceys.db'
   set :database, 'postgres://localhost/aceys-dev'
   require 'sqlite3'
-  before do
-    halt request.env['HTTP_HOST']
-  end
 end
 configure :test do
   #set :database, 'sqlite::memory:'
@@ -18,12 +15,12 @@ end
 configure :production do
   Sequel.connect(ENV['DATABASE_URL'])
 
-  TheDomain = 'http://www.theaceys.com'
+  TheDomain = 'www.theaceys.com'
 
   before do
     halt request.env['HTTP_HOST']
     if request.env['HTTP_HOST'] != TheDomain
-      redirect TheDomain
+      redirect request.scheme + '://' + TheDomain
     end
   end
 end
