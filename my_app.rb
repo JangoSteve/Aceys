@@ -7,6 +7,7 @@
 #
 require 'rubygems'
 require 'sinatra'
+require 'cgi'
 
 require 'config/init.rb'
 
@@ -15,21 +16,23 @@ get '/' do
   haml :index
 end
 
-post '/vote' do
+post '/vote/?' do
   vote = Vote.new(params).submit! or halt 400
   redirect "/thank_you/#{vote.id}"
 end
 
-get '/thank_you' do
+get '/thank_you/?' do
+  @link = "/results"
   thank_you
 end
 
 get '/thank_you/:id' do
   @vote = Vote[params[:id]]
+  @link = "/results/#{@vote.id}"
   thank_you
 end
 
-get '/results' do
+get '/results/?' do
   results
 end
 
