@@ -39,12 +39,15 @@ get '/results/?' do
 end
 
 get '/results/:id' do
-  @vote = Vote[params[:id]]
+  @vote = Vote.eager(:company).filter(:id => params[:id]).first
   results
 end
 
 def results
   @companies = Company.get_by_votes
+  @leaders = @companies.first(5).reverse # needed to plot from top to bottom in jqplot bar graph
+  total_votes = Vote.count
+  @leaders.each{ |l| l.votes_count /= (total_votes/100.0) }
   haml :results
 end
 

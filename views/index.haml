@@ -1,9 +1,10 @@
 - content_for :document_ready do
-  var data = [ '#{@company_names.join('\',\'')}' ];
-  $('#company-name-input').autocomplete(data);
+  var data = [ '#{@company_names.join('\',\'')}' ], $textbox = $('#company-name-input')
+  $textbox.autocomplete(data, { width: $textbox.outerWidth() - 2 });
 
-%h1 My favorite company discovered at ACE 2011 is:
-%p
-  %form{:action => "/vote", :method => :post}
-    %input#company-name-input{:type => :text, :name => :company_name}
-    %input{:type => :submit}
+#homepage
+  %h1 My favorite company discovered at ACE 2011 is:
+  %p
+    %form{:action => "/vote", :method => :post}
+      %input#company-name-input{:type => :text, :name => :company_name}
+      %input.submit{:type => :submit, :value => "Vote"}

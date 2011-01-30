@@ -1,0 +1,59 @@
+#container {
+  max-width: 1024px;
+  margin: auto;
+}
+h1 {
+  font-family: 'Josefin Sans', arial, serif;
+  font-size: 3em;
+  width: auto;
+}
+
+input {
+	text-shadow: 0px 1px 0px #fff;
+	outline: none;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ececec), to(#ffffff));
+	background: -moz-linear-gradient(top,  #ececec,  #fff);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #717171;
+	-webkit-box-shadow: 1px 1px 0px #efefef;
+	-moz-box-shadow: 5px 5px 5px #ccc, 1px 1px 0px #efefef;
+	box-shadow:  1px 1px 0px #efefef;
+}
+
+#homepage input {
+	padding: 5px 15px;
+	font-size: 2em;
+}
+
+input:focus {
+	-webkit-box-shadow: 0px 0px 35px #007eff;
+	-moz-box-shadow: 0px 0px 20px #00ff00;
+	box-shadow: 0px 0px 5px #007eff;
+}
+
+input.submit {
+  display: inline-block;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dadada));
+  background: -moz-linear-gradient(top,  #fff,  #dadada);
+  cursor: pointer;
+}
+
+#homepage, #thank-you {
+  text-align: center;
+}
+
+#homepage h1, #thank-you h1 {
+  margin-top: 10%;
+}
+
+#results-table {
+  margin: 30px 0;
+  font-size: 1.1em;
+}
+
+#results-table .place {
+  text-align: center;
+}

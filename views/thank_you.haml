@@ -1,10 +1,11 @@
-%h1 Thank you for voting!
-%p
-  Visit
-  %a{:href => @link}
-    = "#{request.scheme}://#{request.host}/results"
-  for real-time leaderboard.
-  %br
-  %img{ :src => "http://chart.apis.google.com/chart?chs=200x200&cht=qr&chl=#{CGI::escape(request.scheme + '://' + request.host + @link)}",
-        :width => '200',
-        :height => '200' }
+#thank-you
+  %h1 Thank you for voting!
+  %p
+    Visit
+    %a{:href => @link}
+      = "#{request.scheme}://#{request.host}/results"
+    for real-time leaderboard.
+    %br
+    %img{ :src => "http://chart.apis.google.com/chart?chs=200x200&cht=qr&chl=#{CGI::escape(request.scheme + '://' + request.host + @link)}",
+          :width => '200',
+          :height => '200' }

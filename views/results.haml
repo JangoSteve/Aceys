@@ -1,12 +1,86 @@
-%h1 The Aceys 2011 - Sponsored by Alfa Jango, LLC
-%h2 Leaderboard
-%table
-  %tr
-    %th Company
-    %th Votes
-  - @companies.each do |company|
-    %tr
-      %th
-        = company.preferred_spelling
-      %th
-        = company.votes_count
+- content_for :js_setup do
+  %script{:src => '/jqplot_plugins/jqplot.categoryAxisRenderer.min.js', :type => 'text/javascript'}
+  %script{:src => '/jqplot_plugins/jqplot.barRenderer.min.js', :type => 'text/javascript'}
+  :javascript
+    $.jqplot.config.enablePlugins = true; // on the page before plot creation.
+
+    //line1 = [[1,1], [4,2], [9,3], [16,4]];
+    var line1 = [#{@leaders.enum_with_index.collect{|l,i| "[#{l.votes_count},#{i+1}]"}.join(',')}]
+
+    $(document).ready(function(){ plot3 = $.jqplot('leaders-chart', [line1], {
+        seriesDefaults:{
+            renderer:$.jqplot.BarRenderer,
+            rendererOptions:{barDirection:'horizontal', barPadding: 6, barMargin:15}, 
+            shadowAngle:135},
+        axes:{
+          xaxis:{
+            min: 0,
+            tickOptions: {
+              show: false
+            },
+            showTicks: false
+          },
+            yaxis:{
+                renderer:$.jqplot.CategoryAxisRenderer, 
+                ticks:['#{@leaders.collect(&:preferred_spelling).join('\',\'')}']
+            }
+        }
+      });
+
+      $('td.place').text(function(){
+        var place = parseInt($(this).text());
+        switch(true) {
+        case place > 10 && place < 20:
+          orderinal = 'th';
+          break;
+        case (place % 10) == 1:
+          ordinal = 'st';
+          break;
+        case (place % 10) == 2:
+          ordinal = 'nd';
+          break
+        case (place % 10) == 3:
+          ordinal = 'rd';
+        default:
+          ordinal = 'th';
+        }
+        return place + ordinal;
+      });
+      var companyName = $('#voted-company-name').text();
+
+      $('#voted-current-place').text( function(){
+        return $('#results-table').find('td.company-name:contains(' + companyName + ')').siblings('.place').text();
+      });
+    });
+
+- content_for :document_ready do
+  $('#results-table').dataTable();
+
+#results
+  %h1 The Aceys 2011 - Sponsored by Alfa Jango, LLC
+  %h2 Leaderboard
+
+  .jqPlot#leaders-chart
+
+  %h2 All Companies
+
+  - if @vote
+    %p
+      You voted for
+      %span#voted-company-name= "#{@vote.company.preferred_spelling}"
+      \- currently in
+      %span#voted-current-place
+      place.
+
+  %table#results-table.display
+    %thead
+      %tr
+        %th Company
+        %th Current Rank
+    %tbody
+      - @companies.each_with_index do |company, i|
+        %tr{:class => (i%2 == 0 ? 'even' : 'odd')}
+          %td.company-name
+            = company.preferred_spelling
+          %td.place
+            = i + 1
