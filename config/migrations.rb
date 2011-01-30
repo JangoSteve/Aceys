@@ -55,3 +55,7 @@ migration "create votes table" do
     foreign_key :spelling_id, :spellings
   end
 end
+
+[:votes,:spellings,:companies].each do |table|
+  database[table].delete
+end
