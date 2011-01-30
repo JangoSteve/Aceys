@@ -5,6 +5,9 @@ configure :development do
   #set :database, 'sqlite://development/aceys.db'
   set :database, 'postgres://localhost/aceys-dev'
   require 'sqlite3'
+  before do
+    halt request.env['HTTP_HOST']
+  end
 end
 configure :test do
   #set :database, 'sqlite::memory:'
@@ -18,6 +21,7 @@ configure :production do
   TheDomain = 'http://www.theaceys.com'
 
   before do
+    return render request.env['HTTP_HOST']
     if request.env['HTTP_HOST'] != TheDomain
       redirect TheDomain
     end
