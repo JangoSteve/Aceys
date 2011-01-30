@@ -18,7 +18,6 @@ configure :production do
   TheDomain = 'www.theaceys.com'
 
   before do
-    halt request.env['HTTP_HOST']
     if request.env['HTTP_HOST'] != TheDomain
       redirect request.scheme + '://' + TheDomain
     end
