@@ -21,7 +21,7 @@ configure :production do
   TheDomain = 'http://www.theaceys.com'
 
   before do
-    return render request.env['HTTP_HOST']
+    halt request.env['HTTP_HOST']
     if request.env['HTTP_HOST'] != TheDomain
       redirect TheDomain
     end
