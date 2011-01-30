@@ -27,8 +27,7 @@ describe "My App" do
     it "creates a new company and tallies vote" do
       @vote.submit!
       company = @vote.company
-      company.name.should == @vote.company_name
-      company.preferred_spelling.should == @vote.company_name
+      company.should be_a(Company)
       company.votes_count.should == 1
     end
 

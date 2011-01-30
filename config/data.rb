@@ -119,6 +119,7 @@ class Company < Sequel::Model
   # Normalize all company names to make it easier to regex various spellings and formats
   def before_create
     self.name = self.name.gsub(NAME_REGEX, '').downcase
+    super
   end
 
 end
