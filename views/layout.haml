@@ -38,5 +38,17 @@
       });
 
   %body
-    #container
-      = yield
+    #wrapper
+      #border-top
+        .contained
+          = yield_content :header
+      #container
+        = yield
+      #push
+    #footer
+      %p
+        *The Acey Awards has no official affiliation with
+        %a{:href => 'http://ace-event.org'} ACE event
+        or its organizers.
+        Created and sponsored by
+        %a{:href => 'http://www.alfajango.com'} Alfa Jango, LLC.

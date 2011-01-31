@@ -1,11 +1,80 @@
-#container {
+* {
+	margin: 0;
+}
+html, body {
+	height: 100%;
+}
+#wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -35px; /* the bottom margin is the negative value of the footer's height */
+	background: -webkit-gradient(linear, left top, left bottom, from(#ececec), to(#ffffff));
+	background: -moz-linear-gradient(top,  #f8fcff,  #efefef);
+}
+#push {
+	height: 35px; /* .push must be the same height as .footer */
+}
+#border-top{
+  border-top: solid 10px #00b42d;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+#logo img {
+  border: none;
+  outline: none;
+}
+#logo {
+text-decoration: none;
+}
+#footer {
+  border-bottom: solid 10px #0055ab;
+  height: 25px;
+}
+#footer p {
+  font-size: 0.8em;
+}
+
+/*
+
+Sticky Footer by Ryan Fait
+http://ryanfait.com/
+
+*/
+
+#container, .contained {
+  width: 100%;
   max-width: 1024px;
   margin: auto;
 }
-h1 {
-  font-family: 'Josefin Sans', arial, serif;
-  font-size: 3em;
+h1, h2, h3, h4 {
+  font-family: 'Josefin Sans', arial, sans-serif;
   width: auto;
+}
+h1 {
+  font-size: 3em;
+  padding: 25px 0 15px;
+}
+h2 {
+  font-size: 2em;
+  padding: 25px 0 15px;
+}
+h3 {
+  font-size: 1em;
+}
+
+.subheading {
+  font-size: 1em;
+  padding: 0;
+}
+
+#border-top .subheading {
+  margin-left: 10px;
+}
+
+p, table {
+  font-family: arial, sans-serif;
 }
 
 input {
@@ -28,9 +97,9 @@ input {
 }
 
 input:focus {
-	-webkit-box-shadow: 0px 0px 35px #007eff;
-	-moz-box-shadow: 0px 0px 20px #00ff00;
-	box-shadow: 0px 0px 5px #007eff;
+	-webkit-box-shadow: 0px 0px 20px #00b42d;
+	-moz-box-shadow: 0px 0px 20px #00b42d;
+	box-shadow: 0px 0px 20px #00b42d;
 }
 
 input.submit {
@@ -45,10 +114,6 @@ input.submit {
   text-align: center;
 }
 
-#homepage h1, #thank-you h1 {
-  margin-top: 10%;
-}
-
 #results-table {
   margin: 30px 0;
   font-size: 1.1em;
@@ -56,4 +121,24 @@ input.submit {
 
 #results-table .place {
   text-align: center;
+}
+
+#footer {
+  text-align: center;
+}
+
+.vertically-centered {
+	position:absolute;
+	top: 50%;
+	left: 50%;
+	width:100%;
+	height:18em;
+	margin-top: -9em; /*set to a negative number 1/2 of your height*/
+	margin-left: -50%; /*set to a negative number 1/2 of your width*/
+}
+
+#leaders-chart {
+  width: 100%;
+}
+#all-companies {
 }

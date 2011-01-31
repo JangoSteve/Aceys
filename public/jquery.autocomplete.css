@@ -46,9 +46,9 @@
 }
 
 .ac_over {
-	background-color: #669966;
+	background-color: #00b42d;
 	color: white;
-  background: -webkit-gradient(linear, left top, left bottom, from(#ececec), to(#ffffff));
-	background: -moz-linear-gradient(top,  #9b9,  #696);
+  background: -webkit-gradient(linear, left top, left bottom, from(#00cc33), to(#00b42d));
+	background: -moz-linear-gradient(top,  #00cc33,  #00b42d);
   text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
 }

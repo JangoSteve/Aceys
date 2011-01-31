@@ -8,6 +8,7 @@
     var line1 = [#{@leaders.enum_with_index.collect{|l,i| "[#{l.votes_count},#{i+1}]"}.join(',')}]
 
     $(document).ready(function(){ plot3 = $.jqplot('leaders-chart', [line1], {
+        seriesColors: ['#00b42d', '#0055ab'],
         seriesDefaults:{
             renderer:$.jqplot.BarRenderer,
             rendererOptions:{barDirection:'horizontal', barPadding: 6, barMargin:15}, 
@@ -51,36 +52,56 @@
       $('#voted-current-place').text( function(){
         return $('#results-table').find('td.company-name:contains(' + companyName + ')').siblings('.place').text();
       });
+
+      var $allCompanies = $('#all-companies')
+      $allCompanies.before($('<a />',{
+        href: '#',
+        id: 'toggle-all-companies',
+        html: 'Show all companies...',
+        click: function(e){
+          var $this = $(this);
+          $this.toggleClass("active").next().slideToggle("slow");
+          $this.text( $this.hasClass('active') ? 'Hide all companies' : 'Show all companies...')
+          e.preventDefault();
+        }
+      })).hide();
     });
 
 - content_for :document_ready do
   $('#results-table').dataTable();
 
+- content_for :header do
+  %a{:href => '/', :id => 'logo'}
+    %img{:src => '/logo.png'}
+  %h2.subheading
+    The People's Choice Awards of the Annual Collaboration for Entrepreneurship
+
 #results
-  %h1 The Aceys 2011 - Sponsored by Alfa Jango, LLC
-  %h2 Leaderboard
+  %h1 Leaderboard
 
   .jqPlot#leaders-chart
 
-  %h2 All Companies
+  %br
+  #all-companies
+    %h2 All Companies
 
-  - if @vote
-    %p
-      You voted for
-      %span#voted-company-name= "#{@vote.company.preferred_spelling}"
-      \- currently in
-      %span#voted-current-place
-      place.
+    - if @vote
+      %p
+        You voted for
+        %span#voted-company-name= "#{@vote.company.preferred_spelling}"
+        \- currently in
+        %span#voted-current-place
+        place.
 
-  %table#results-table.display
-    %thead
-      %tr
-        %th Company
-        %th Current Rank
-    %tbody
-      - @companies.each_with_index do |company, i|
-        %tr{:class => (i%2 == 0 ? 'even' : 'odd')}
-          %td.company-name
-            = company.preferred_spelling
-          %td.place
-            = i + 1
+    %table#results-table.display
+      %thead
+        %tr
+          %th Company
+          %th Current Rank
+      %tbody
+        - @companies.each_with_index do |company, i|
+          %tr{:class => (i%2 == 0 ? 'even' : 'odd')}
+            %td.company-name
+              = company.preferred_spelling
+            %td.place
+              = i + 1
