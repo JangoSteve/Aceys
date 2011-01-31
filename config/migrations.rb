@@ -57,6 +57,6 @@ migration "create votes table" do
 end
 
 # DELETE ALL DATA AND START OVER
-#[:votes,:spellings,:companies].each do |table|
-#  database[table].delete
-#end
+[:votes,:spellings,:companies].each do |table|
+  database[table].delete
+end
