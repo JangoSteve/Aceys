@@ -5,6 +5,16 @@ configure :development do
   #set :database, 'sqlite://development/aceys.db'
   set :database, 'postgres://localhost/aceys-dev'
   require 'sqlite3'
+
+  TheDomain = 'localhost:9292'
+
+  enable :sessions
+  #use Rack::Session::Cookie, :key => 'rack.session',
+  #                         :domain => TheDomain,
+  #                         :path => '/',
+  #                         :expire_after => 300, # 5 minutes, in seconds
+  #                         :secret => 'change_me'
+
 end
 configure :test do
   #set :database, 'sqlite::memory:'
@@ -22,6 +32,14 @@ configure :production do
       redirect request.scheme + '://' + TheDomain
     end
   end
+
+  enable :sessions
+  #use Rack::Session::Cookie, :key => 'rack.session',
+  #                         :domain => TheDomain,
+  #                         :path => '/',
+  #                         :expire_after => 86400, # 1 day, in seconds
+  #                         :secret => 'aceysarelegit11'
+
 end
 
 require 'config/migrations'

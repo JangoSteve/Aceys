@@ -1,0 +1,18 @@
+#thank-you.vertically-centered
+  %h1 Looks like you already voted.
+  %p
+    To keep things fair, we ask that you only vote once.
+    It looks like you already voted for 
+    %em
+      #{@vote.company.preferred_spelling}.
+    %br
+    Check out
+    %a{:href => @link}
+      = "#{request.scheme}://#{request.host}/results"
+    to see how they're doing in the real-time leaderboard
+    %br
+    or scan this barcode with your smartphone:
+    %br
+    %img{ :src => "http://chart.apis.google.com/chart?chs=200x200&cht=qr&chl=#{CGI::escape(request.scheme + '://' + request.host + @link)}",
+          :width => '200',
+          :height => '200' }
