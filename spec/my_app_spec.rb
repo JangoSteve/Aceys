@@ -85,8 +85,28 @@ describe "My App" do
       @company2 = Company.create(:name => "IX Innovations")
     end
 
+    it "gets rid of corporate entities" do
+      ["Alfa Jango, LLC", "Alfa Jango, Inc.", "Alfa Jango Co.", "Alfa Jango Corporation", "Alfa Jango Incorporated", "Alfa Jango PLLC"].each do |spelling|
+        company = Company.new(:name => spelling)
+        company.name.normalize!
+        company.name.should == 'alfajango'
+      end
+    end
+
     it "matches common spelling variants" do
-      ["Alfa Jango, LLC", "alfa jango llc", "AlfaJango llc", "alfa-jango_llc", "'Alfa' \"Jango\", LLC", "Alfa/Jango LLC"].each do |spelling|
+      ["Alfa Jango, LLC", "alfa jango llc", "AlfaJango llc", "alfa_jango llc", "'Alfa' \"Jango\", LLC", "Alfa/Jango LLC"].each do |spelling|
+        Company.find_by_pattern(spelling).should have_found_by_spelling @company, spelling
+      end
+    end
+
+    it "matches common company-name variants" do
+      ["Alfa Jango Co", "Alfa Jango Inc", "Alfa Jango Co.", "Alfa Jango Inc.", "Alfa Jango PLLC", "Alfa Jango Corp", "Alfa Jango Corp."].each do |spelling|
+        Company.find_by_pattern(spelling).should have_found_by_spelling @company, spelling
+      end
+    end
+
+    it "matches common phonetic variants" do
+      ["Alpha Jango, LLC", "Alffa Jango"].each do |spelling|
         Company.find_by_pattern(spelling).should have_found_by_spelling @company, spelling
       end
     end

@@ -69,6 +69,44 @@ module Voteable
 
 end
 
+module Spellable
+
+  PUNCTUATION_REGEX = /[ \-_,\'\"\/\.]+/
+  PHONETIC_EQUIVALENCES = {
+    'f' => [
+      /(ph)/, /f{2}/
+    ],
+    's' => [
+      /c[aeiouy]/, /s{2}/
+    ],
+    'k' => [
+      /c^[aeiouy]/
+    ]
+  }
+  CORPORATE_EQUIVALENCES = /\s(incorporated|corporation|p?llc|co(rp)?|inc)/
+
+  def normalize!
+    # using self.downcase! returns nil if no changes were made, instead of unaltered string, so we can't chain it
+    self.downcase!
+
+    self.
+      gsub!(CORPORATE_EQUIVALENCES, '')
+
+    PHONETIC_EQUIVALENCES.each do |canonical,equivalent|
+      equivalent.each do |regex|
+        self.gsub!(regex,canonical)
+      end
+    end
+
+    self.gsub!(PUNCTUATION_REGEX, '')
+    return self
+  end
+end
+
+class String
+  include Spellable
+end
+
 class Vote < Sequel::Model
   many_to_one :company
   many_to_one :spelling
@@ -92,12 +130,11 @@ end
 
 class Company < Sequel::Model
   include Voteable
+  include Spellable
 
   one_to_many :spellings
 
   Company.add_association_dependencies :spellings => :delete
-
-  NAME_REGEX = /[ \-_,\'\"\/]+/
 
   def self.find_by_pattern_or_create(spelling)
     company =  Company.find_by_pattern(spelling) ||
@@ -107,8 +144,11 @@ class Company < Sequel::Model
   end
 
   def self.find_by_pattern(spelling)
-    regex = Regexp.new(spelling.gsub(NAME_REGEX, '[ -_,\'\"]*'))
-    Company.filter(:name.ilike(regex)).first
+    #regex = Regexp.new(spelling.gsub(PUNCTUATION_REGEX, '[ -_,\'\"]*'))
+    #Company.filter(:name.ilike(regex)).first
+    # ^^ No longer need to search by regex, could probably go back to using sqlite for test env ^^
+    normalized_spelling = spelling.clone.normalize!
+    Company.filter(:name.ilike(normalized_spelling)).first
   end
 
   def update_preferred_spelling
@@ -118,7 +158,8 @@ class Company < Sequel::Model
 
   # Normalize all company names to make it easier to regex various spellings and formats
   def before_create
-    self.name = self.name.gsub(NAME_REGEX, '').downcase
+    # Cloned so we can pass objects as name parameter to new Company
+    self.name = self.name.clone.normalize!
     super
   end
 
@@ -129,12 +170,12 @@ class Spelling < Sequel::Model
 
   many_to_one :company
 
-  def self.tally(name)
-    spelling = Spelling.eager(:company).filter(:name => name).first ||
-      Spelling.new(:name => name)
+  def self.tally(company_name)
+    spelling = Spelling.eager(:company).filter(:name => company_name).first ||
+      Spelling.new(:name => company_name)
 
     # Called from Vote#submit!, already contained in a transaction
-    spelling.company ||= Company.find_by_pattern_or_create(name)
+    spelling.company ||= Company.find_by_pattern_or_create(company_name)
     spelling.increment_votes
     spelling.company.increment_votes
 
