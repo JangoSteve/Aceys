@@ -34,7 +34,7 @@ configure :production do
 
   before do
     if request.env['HTTP_HOST'] != TheDomain
-      redirect request.scheme + '://' + TheDomain
+      redirect request.scheme + '://' + TheDomain + request.path, 301
     end
   end
 
