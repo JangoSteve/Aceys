@@ -29,8 +29,8 @@ configure :production do
   TheDomain = 'www.theaceys.com'
 
   # On Heroku, set this with the heroku gem:
-  # >$ heroku config:add AUTH_CREDENTIALS=['someuser', 'somepassword']
-  AuthCredentials = ENV['AUTH_CREDENTIALS'] || ['admin', 'password']
+  # >$ heroku config:add AUTH_USER=someuser AUTH_PASSWORD=somepassword
+  AuthCredentials = [ ENV['AUTH_USER'] || 'admin', ENV['AUTH_PASSWORD'] || 'password']
 
   before do
     if request.env['HTTP_HOST'] != TheDomain
