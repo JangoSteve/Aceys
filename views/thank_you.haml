@@ -1,11 +1,11 @@
 - content_for :document_ready do
-  setTimeout( function() { window.location.replace("http://www.theaceys.com") }, 3000);
+  setTimeout( function() { window.location.href = "/" }, 15000);
 #thank-you.vertically-centered
   %h1 Thank you for voting!
   %p
     Visit
     %a{:href => @link}
-      = "#{request.scheme}://#{request.host}/results"
+      = "#{request.host}/results"
     for real-time leaderboard
     %br
     or scan this barcode with your smartphone:

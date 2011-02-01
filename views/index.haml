@@ -1,6 +1,6 @@
 - content_for :document_ready do
   var data = [ '#{@company_names.join('\',\'')}' ], $textbox = $('#company-name-input')
-  $textbox.autocomplete(data, { width: $textbox.outerWidth() - 2 });
+  $textbox.autocomplete(data, { width: $textbox.outerWidth() - 2 }).focus();
 
 #homepage.vertically-centered
   %h2 My favorite company discovered at ACE 2011 is:
