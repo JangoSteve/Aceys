@@ -23,7 +23,7 @@ helpers do
 
   def authorized?
     @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-    @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == ['steve', 'theaceysarelegit11']
+    @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == AuthCredentials
   end
 
   def results_link(vote_id)

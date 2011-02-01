@@ -7,6 +7,7 @@ configure :development do
   require 'sqlite3'
 
   TheDomain = 'localhost:9292'
+  AuthCredentials = ['admin', 'password']
 
   enable :sessions
   #use Rack::Session::Cookie, :key => 'rack.session',
@@ -26,6 +27,10 @@ configure :production do
   Sequel.connect(ENV['DATABASE_URL'])
 
   TheDomain = 'www.theaceys.com'
+
+  # On Heroku, set this with the heroku gem:
+  # >$ heroku config:add AUTH_CREDENTIALS=['someuser', 'somepassword']
+  AuthCredentials = ENV['AUTH_CREDENTIALS'] || ['admin', 'password']
 
   before do
     if request.env['HTTP_HOST'] != TheDomain
