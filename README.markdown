@@ -1,3 +1,13 @@
+# The Aceys
+
+This is a Ruby/Sinatra web application for anonymous voting for any competition. It was developed by [Alfa Jango Web-based Software](http://www.alfajango.com) to facilitate a sort of "People's Choice" awards for the [Annual Collaboration for Entrepreneurship event](http://ace-event.org) and can be found at [TheAceys.com](http://www.theaceys.com).
+
+This app was developed specifically for being deployed to Heroku's cloud
+platform. See instructions below for cloning this applicaiton and
+deploying for your own use.
+
+--------------------------------------------------------------------
+
 # Here is a sample/template sinatra application ready for deployment to [Heroku](http://heroku.com).
 
 **NOTE** This is for heroku.com and not herokugarden.com
